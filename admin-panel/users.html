@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users | Matrimony Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="logo-icon">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <h2>Matrimony</h2>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Main</div>
+          <a href="dashboard.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Dashboard
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Management</div>
+          <a href="users.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Users
+          </a>
+          <a href="connections.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Connections
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Settings</div>
+          <a href="#" class="nav-link" onclick="showChangePassword()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Change Password
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-info">
+          <div class="admin-avatar" id="adminAvatar">A</div>
+          <div class="admin-details">
+            <div class="admin-name" id="adminName">Admin</div>
+            <div class="admin-role" id="adminRole">admin</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-full" onclick="logout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" data-lang="admin.users">Users</h1>
+          <p class="page-subtitle">Manage all registered users</p>
+        </div>
+        <div class="lang-selector">
+          <label>🌐</label>
+          <select id="langSelector" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="search-bar">
+        <div class="search-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by name, email, or phone..."
+            onkeyup="debounceSearch()"
+          >
+        </div>
+        <select class="filter-select" id="verifiedFilter" onchange="loadUsers(1)">
+          <option value="">All Verification</option>
+          <option value="true">Verified</option>
+          <option value="false">Pending</option>
+        </select>
+        <select class="filter-select" id="activeFilter" onchange="loadUsers(1)">
+          <option value="">All Status</option>
+          <option value="true">Active</option>
+          <option value="false">Banned</option>
+        </select>
+        <select class="filter-select" id="genderFilter" onchange="loadUsers(1)">
+          <option value="">All Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+
+      <!-- Users Table -->
+      <div class="card">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Gender / Age</th>
+                <th>Location</th>
+                <th>Profile</th>
+                <th>Status</th>
+                <th>Verified</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable">
+              <tr>
+                <td colspan="8" class="loading">
+                  <div class="spinner"></div>
+                  Loading users...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- User Details Modal -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">User Details</h3>
+        <button class="modal-close" onclick="closeModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="userDetails">
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading...
+        </div>
+      </div>
+      <div class="modal-footer" id="userActions"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/admin.js"></script>
+  <script>
+    let searchTimeout;
+    let currentPage = 1;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      loadUsers(1);
+    });
+
+    // Debounce search
+    function debounceSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => loadUsers(1), 300);
+    }
+
+    // Load users
+    async function loadUsers(page = 1) {
+      currentPage = page;
+      const search = document.getElementById('searchInput').value;
+      const isVerified = document.getElementById('verifiedFilter').value;
+      const isActive = document.getElementById('activeFilter').value;
+      const gender = document.getElementById('genderFilter').value;
+
+      const params = new URLSearchParams({ page, limit: 15 });
+      if (search) params.append('search', search);
+      if (isVerified) params.append('isVerified', isVerified);
+      if (isActive) params.append('isActive', isActive);
+      if (gender) params.append('gender', gender);
+
+      try {
+        const data = await api(`/users?${params}`);
+        renderUsers(data.users);
+        renderPagination(document.getElementById('pagination'), data.pagination, 'loadUsers');
+      } catch (error) {
+        showToast('error', 'Failed to load users');
+      }
+    }
+
+    // Render users table
+    function renderUsers(users) {
+      const tbody = document.getElementById('usersTable');
+      
+      if (users.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+              <h3>No users found</h3>
+              <p>Try adjusting your search or filters.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = users.map(user => `
+        <tr>
+          <td>
+            <div class="user-info">
+              <div class="user-avatar">${(user.basicInfo?.name || user.email)[0].toUpperCase()}</div>
+              <div class="user-details">
+                <span class="user-name">${user.basicInfo?.name || 'Not set'}</span>
+                <span class="user-email">${user.email}</span>
+              </div>
+            </div>
+          </td>
+          <td>${capitalize(user.basicInfo?.gender || '-')} ${user.basicInfo?.age ? `/ ${user.basicInfo.age}` : ''}</td>
+          <td>${user.basicInfo?.city || '-'}, ${user.basicInfo?.state || '-'}</td>
+          <td>
+            <span class="badge ${user.isProfileComplete ? 'badge-success' : 'badge-warning'}">
+              ${user.isProfileComplete ? 'Complete' : 'Incomplete'}
+            </span>
+          </td>
+          <td>
+            <span class="badge ${user.isActive ? 'badge-success' : 'badge-error'}">
+              ${user.isActive ? 'Active' : 'Banned'}
+            </span>
+          </td>
+          <td>
+            <span class="badge ${user.isVerified ? 'badge-success' : 'badge-warning'}">
+              ${user.isVerified ? 'Verified' : 'Pending'}
+            </span>
+          </td>
+          <td>${formatDate(user.createdAt)}</td>
+          <td>
+            <div class="actions">
+              <button class="action-btn view" title="View Details" onclick="viewUser('${user._id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+              <button class="action-btn" style="color: #25D366;" title="Share on WhatsApp" onclick="shareUserOnWhatsApp('${user._id}')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </button>
+              ${!user.isVerified ? `
+                <button class="action-btn verify" title="Verify User" onclick="verifyUser('${user._id}')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </button>
+              ` : ''}
+              <button class="action-btn ban" title="${user.isActive ? 'Ban' : 'Unban'} User" onclick="toggleBan('${user._id}', ${user.isActive})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  ${user.isActive 
+                    ? '<circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>' 
+                    : '<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M9 12l2 2 4-4"></path>'}
+                </svg>
+              </button>
+              <button class="action-btn delete" title="Delete User" onclick="deleteUser('${user._id}', '${user.basicInfo?.name || user.email}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // View user details
+    async function viewUser(userId) {
+      document.getElementById('userModal').classList.add('active');
+      document.getElementById('userDetails').innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+      
+      try {
+        const data = await api(`/users/${userId}`);
+        const user = data.user;
+        
+        document.getElementById('userDetails').innerHTML = `
+          <div style="display: grid; gap: 20px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div class="user-avatar" style="width: 64px; height: 64px; font-size: 24px;">
+                ${(user.basicInfo?.name || user.email)[0].toUpperCase()}
+              </div>
+              <div>
+                <h3 style="margin: 0;">${user.basicInfo?.name || 'Not set'}</h3>
+                <p style="margin: 4px 0; color: var(--text-secondary);">${user.email}</p>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                  <span class="badge ${user.isActive ? 'badge-success' : 'badge-error'}">${user.isActive ? 'Active' : 'Banned'}</span>
+                  <span class="badge ${user.isVerified ? 'badge-success' : 'badge-warning'}">${user.isVerified ? 'Verified' : 'Pending'}</span>
+                  <span class="badge ${user.isProfileComplete ? 'badge-success' : 'badge-warning'}">${user.isProfileComplete ? 'Complete' : 'Incomplete'}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <h4 style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">BASIC INFO</h4>
+                <p><strong>Gender:</strong> ${capitalize(user.basicInfo?.gender) || '-'}</p>
+                <p><strong>Age:</strong> ${user.basicInfo?.age || '-'}</p>
+                <p><strong>Height:</strong> ${user.basicInfo?.height ? user.basicInfo.height + ' cm' : '-'}</p>
+                <p><strong>Location:</strong> ${user.basicInfo?.city || '-'}, ${user.basicInfo?.state || '-'}</p>
+                <p><strong>Marital Status:</strong> ${capitalize(user.basicInfo?.maritalStatus) || '-'}</p>
+              </div>
+              <div>
+                <h4 style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">CULTURAL INFO</h4>
+                <p><strong>Religion:</strong> ${capitalize(user.culturalInfo?.religion) || '-'}</p>
+                <p><strong>Caste:</strong> ${user.culturalInfo?.caste || '-'}</p>
+                <p><strong>Mother Tongue:</strong> ${user.culturalInfo?.motherTongue || '-'}</p>
+              </div>
+              <div>
+                <h4 style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">CAREER INFO</h4>
+                <p><strong>Education:</strong> ${capitalize(user.careerInfo?.education) || '-'}</p>
+                <p><strong>Profession:</strong> ${user.careerInfo?.profession || '-'}</p>
+                <p><strong>Company:</strong> ${user.careerInfo?.company || '-'}</p>
+                <p><strong>Income:</strong> ${capitalize(user.careerInfo?.annualIncome) || '-'}</p>
+              </div>
+              <div>
+                <h4 style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">ACCOUNT</h4>
+                <p><strong>Phone:</strong> ${user.phone || '-'}</p>
+                <p><strong>Joined:</strong> ${formatDate(user.createdAt)}</p>
+                <p><strong>Last Active:</strong> ${formatDate(user.lastActive)}</p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('userActions').innerHTML = `
+          <button class="btn btn-whatsapp btn-lg" onclick="shareUserOnWhatsApp('${user._id}')">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Share on WhatsApp
+          </button>
+          ${!user.isVerified ? `<button class="btn btn-success btn-lg" onclick="verifyUser('${user._id}'); closeModal();">Verify User</button>` : ''}
+          <button class="btn ${user.isActive ? 'btn-warning' : 'btn-success'} btn-lg" onclick="toggleBan('${user._id}', ${user.isActive}); closeModal();">
+            ${user.isActive ? 'Ban User' : 'Unban User'}
+          </button>
+          <button class="btn btn-danger btn-lg" onclick="deleteUser('${user._id}', '${user.basicInfo?.name || user.email}'); closeModal();">Delete</button>
+        `;
+      } catch (error) {
+        showToast('error', 'Failed to load user details');
+        closeModal();
+      }
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('userModal').classList.remove('active');
+    }
+
+    // Verify user
+    async function verifyUser(userId) {
+      try {
+        await api(`/users/${userId}/verify`, { method: 'PUT' });
+        showToast('success', 'User verified successfully');
+        loadUsers(currentPage);
+      } catch (error) {
+        showToast('error', error.message);
+      }
+    }
+
+    // Toggle ban
+    async function toggleBan(userId, isCurrentlyActive) {
+      const action = isCurrentlyActive ? 'ban' : 'unban';
+      if (!confirmAction(`Are you sure you want to ${action} this user?`)) return;
+
+      try {
+        await api(`/users/${userId}/ban`, {
+          method: 'PUT',
+          body: JSON.stringify({ ban: isCurrentlyActive }),
+        });
+        showToast('success', `User ${action}ned successfully`);
+        loadUsers(currentPage);
+      } catch (error) {
+        showToast('error', error.message);
+      }
+    }
+
+    // Delete user
+    async function deleteUser(userId, userName) {
+      if (!confirmAction(`Are you sure you want to delete "${userName}"? This action cannot be undone.`)) return;
+
+      try {
+        await api(`/users/${userId}`, { method: 'DELETE' });
+        showToast('success', 'User deleted successfully');
+        loadUsers(currentPage);
+      } catch (error) {
+        showToast('error', error.message);
+      }
+    }
+  </script>
+</body>
+</html>
