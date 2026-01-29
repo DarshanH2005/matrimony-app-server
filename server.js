@@ -206,7 +206,7 @@ app.listen(PORT, () => {
 ║                                                            ║
 ║   Environment: ${(process.env.NODE_ENV || "development").padEnd(40)}║
 ║   Port: ${PORT}║
-║   API URL: http://localhost:${PORT.toString().padEnd(27)}║
+║   API URL: https://matrimony-app-server.onrender.com       ║
 ║                                                            ║
 ║   Endpoints:                                               ║
 ║   - POST /api/auth/register    (Create account)            ║
@@ -216,7 +216,7 @@ app.listen(PORT, () => {
 ║   - POST /api/connection/send  (Send interest)             ║
 ║   - PUT  /api/connection/respond (Accept/Reject)           ║
 ║                                                            ║
-║   Admin Panel: http://localhost:${PORT}/admin               ║
+║   Admin Panel: https://matrimony-app-server.onrender.com/admin ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
   `);
