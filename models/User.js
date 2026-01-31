@@ -39,6 +39,16 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    photos: {
+      type: [String],
+      validate: [
+        function (val) {
+          return val.length <= 4;
+        },
+        "{PATH} exceeds the limit of 4",
+      ],
+      default: [],
+    },
 
     // Basic Information
     basicInfo: {
@@ -357,6 +367,29 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Privacy Settings
+    privacySettings: {
+      showProfile: {
+        type: Boolean,
+        default: true,
+      },
+      showPhotos: {
+        type: Boolean,
+        default: true,
+      },
+      showContactInfo: {
+        type: Boolean,
+        default: false,
+      },
+      showOnlineStatus: {
+        type: Boolean,
+        default: true,
+      },
+      allowMessages: {
+        type: Boolean,
+        default: true,
+      },
+    },
     lastActive: {
       type: Date,
       default: Date.now,
@@ -367,12 +400,39 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
-// Index for efficient queries
-UserSchema.index({ "basicInfo.gender": 1 });
-UserSchema.index({ "basicInfo.age": 1 });
-UserSchema.index({ "culturalInfo.religion": 1 });
-UserSchema.index({ "careerInfo.annualIncome": 1 });
+// ===================
+// INDEXES FOR HIGH PERFORMANCE
+// ===================
+
+// Compound index for recommendations query (most critical for 10K users)
+// Matches the filter pattern: isActive + isProfileComplete + gender + age range
+UserSchema.index({
+  isActive: 1,
+  isProfileComplete: 1,
+  "basicInfo.gender": 1,
+  "basicInfo.age": 1,
+});
+
+// Index for religion filtering (frequently used in preferences)
+UserSchema.index({
+  isActive: 1,
+  isProfileComplete: 1,
+  "culturalInfo.religion": 1,
+});
+
+// Single field indexes for common lookups
 UserSchema.index({ email: 1 });
+UserSchema.index({ phone: 1 });
+UserSchema.index({ "basicInfo.city": 1 });
+UserSchema.index({ "careerInfo.annualIncome": 1 });
+UserSchema.index({ lastActive: -1 }); // For "recently active" sorting
+
+// Text index for search functionality
+UserSchema.index({
+  "basicInfo.name": "text",
+  "basicInfo.city": "text",
+  "careerInfo.profession": "text",
+});
 
 // Virtual for full name display
 UserSchema.virtual("displayName").get(function () {

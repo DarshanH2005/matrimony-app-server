@@ -213,6 +213,9 @@ router.get("/requests", auth, async (req, res) => {
 
     let requests = user.connectionRequests || [];
 
+    // Filter out requests where the populated user is null (deleted users)
+    requests = requests.filter((req) => req.userId && req.userId._id);
+
     // Filter by type if specified
     if (type && ["sent", "received"].includes(type)) {
       requests = requests.filter((req) => req.type === type);
@@ -328,7 +331,10 @@ router.get("/all", auth, async (req, res) => {
     const pending = user.connectionRequests
       .filter(
         (req) =>
-          req.status === "pending" && req.type === "received" && req.userId,
+          req.status === "pending" &&
+          req.type === "received" &&
+          req.userId &&
+          req.userId._id, // Ensure populated user exists
       )
       .map((req) => ({
         _id: req._id,
@@ -339,7 +345,9 @@ router.get("/all", auth, async (req, res) => {
 
     // Get accepted connections
     const accepted = user.connectionRequests
-      .filter((req) => req.status === "accepted" && req.userId)
+      .filter(
+        (req) => req.status === "accepted" && req.userId && req.userId._id, // Ensure populated user exists
+      )
       .map((req) => ({
         _id: req._id,
         user: req.userId,

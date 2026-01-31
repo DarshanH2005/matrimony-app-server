@@ -506,6 +506,154 @@ router.put(
 );
 
 /**
+ * POST /api/admin/users
+ * Create a new user from admin panel with complete profile
+ */
+router.post(
+  "/users",
+  verifyAdminToken,
+  requirePermission("users"),
+  async (req, res) => {
+    try {
+      const {
+        // Account Info
+        email,
+        password,
+        phone,
+        // Basic Info
+        name,
+        gender,
+        age,
+        height,
+        maritalStatus,
+        bodyType,
+        city,
+        state,
+        about,
+        // Cultural Info
+        religion,
+        caste,
+        motherTongue,
+        gothra,
+        // Career Info
+        education,
+        profession,
+        company,
+        annualIncome,
+        // Family Info
+        familyType,
+        familyStatus,
+        fatherOccupation,
+        motherOccupation,
+        brothers,
+        sisters,
+      } = req.body;
+
+      // Validation
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Email and password are required",
+        });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 6 characters",
+        });
+      }
+
+      // Check if user exists
+      const existingUser = await User.findOne({ email: email.toLowerCase() });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "User with this email already exists",
+        });
+      }
+
+      // Hash password
+      const bcrypt = require("bcryptjs");
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create user with complete profile
+      const user = new User({
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        phone: phone || "",
+        basicInfo: {
+          name: name || "",
+          gender: gender || "",
+          age: age ? parseInt(age) : null,
+          height: height ? parseInt(height) : null,
+          maritalStatus: maritalStatus || "",
+          bodyType: bodyType || "",
+          city: city || "",
+          state: state || "",
+          country: "India",
+          about: about || "",
+        },
+        culturalInfo: {
+          religion: religion || "",
+          caste: caste || "",
+          motherTongue: motherTongue || "",
+          gothra: gothra || "",
+        },
+        careerInfo: {
+          education: education || "",
+          profession: profession || "",
+          company: company || "",
+          annualIncome: annualIncome || "",
+        },
+        familyInfo: {
+          familyType: familyType || "",
+          familyStatus: familyStatus || "",
+          fatherOccupation: fatherOccupation || "",
+          motherOccupation: motherOccupation || "",
+          brothers: brothers ? parseInt(brothers) : 0,
+          sisters: sisters ? parseInt(sisters) : 0,
+        },
+        isActive: true,
+        isVerified: true, // Admin-created users are auto-verified
+        isProfileComplete: !!(name && gender && age),
+      });
+
+      await user.save();
+
+      res.status(201).json({
+        success: true,
+        message: "User created successfully",
+        data: {
+          user: {
+            _id: user._id,
+            email: user.email,
+            basicInfo: user.basicInfo,
+            isActive: user.isActive,
+            isVerified: user.isVerified,
+            isProfileComplete: user.isProfileComplete,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Create user error:", error);
+
+      if (error.code === 11000) {
+        return res.status(400).json({
+          success: false,
+          message: "Email already exists",
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Server error while creating user",
+      });
+    }
+  },
+);
+
+/**
  * DELETE /api/admin/users/:id
  * Delete a user
  */

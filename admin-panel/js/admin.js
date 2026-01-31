@@ -419,3 +419,80 @@ function t(key) {
   }
   return value || key;
 }
+
+// ===================
+// MOBILE MENU
+// ===================
+
+// Toggle mobile sidebar
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+
+  if (sidebar) {
+    sidebar.classList.toggle("open");
+  }
+  if (overlay) {
+    overlay.classList.toggle("active");
+  }
+}
+
+// Close sidebar when overlay clicked
+function closeSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+
+  if (sidebar) {
+    sidebar.classList.remove("open");
+  }
+  if (overlay) {
+    overlay.classList.remove("active");
+  }
+}
+
+// Initialize mobile menu on page load
+function initMobileMenu() {
+  // Create menu toggle button if it doesn't exist
+  if (!document.getElementById("menuToggle")) {
+    const menuBtn = document.createElement("button");
+    menuBtn.id = "menuToggle";
+    menuBtn.className = "menu-toggle";
+    menuBtn.onclick = toggleSidebar;
+    menuBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    `;
+    document.body.appendChild(menuBtn);
+  }
+
+  // Create overlay if it doesn't exist
+  if (!document.getElementById("sidebarOverlay")) {
+    const overlay = document.createElement("div");
+    overlay.id = "sidebarOverlay";
+    overlay.className = "sidebar-overlay";
+    overlay.onclick = closeSidebar;
+    document.body.appendChild(overlay);
+  }
+
+  // Close sidebar on nav link click (mobile)
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth <= 1024) {
+        closeSidebar();
+      }
+    });
+  });
+}
+
+// Close sidebar on window resize to desktop
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 1024) {
+    closeSidebar();
+  }
+});
+
+// Auto-init mobile menu when DOM is ready
+document.addEventListener("DOMContentLoaded", initMobileMenu);

@@ -182,7 +182,13 @@ function generateUser(index, gender) {
       familyValues: randomItem(familyValues),
     },
     about: `Hi, I am ${firstName}. I am looking for a compatible life partner. I am a ${randomItem(professions).toLowerCase()} by profession and believe in ${randomItem(["family values", "mutual respect", "trust and understanding", "love and care"])}.`,
-    photos: [],
+    // Add 3 dummy photos using randomuser.me (gender-appropriate)
+    profilePhoto: `https://randomuser.me/api/portraits/${gender === "male" ? "men" : "women"}/${index}.jpg`,
+    photos: [
+      `https://randomuser.me/api/portraits/${gender === "male" ? "men" : "women"}/${(index + 10) % 100}.jpg`,
+      `https://randomuser.me/api/portraits/${gender === "male" ? "men" : "women"}/${(index + 20) % 100}.jpg`,
+      `https://randomuser.me/api/portraits/${gender === "male" ? "men" : "women"}/${(index + 30) % 100}.jpg`,
+    ],
     partnerPreferences: {
       ageRange: { min: age - 3, max: age + 5 },
       heightRange: { min: 150, max: 185 },

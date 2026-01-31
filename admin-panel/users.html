@@ -91,13 +91,22 @@
           <h1 class="page-title" data-lang="admin.users">Users</h1>
           <p class="page-subtitle">Manage all registered users</p>
         </div>
-        <div class="lang-selector">
-          <label>🌐</label>
-          <select id="langSelector" onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
-            <option value="hi">हिंदी</option>
-            <option value="kn">ಕನ್ನಡ</option>
-          </select>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <button class="btn btn-primary" onclick="showAddUserModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add User
+          </button>
+          <div class="lang-selector">
+            <label>🌐</label>
+            <select id="langSelector" onchange="changeLanguage(this.value)">
+              <option value="en">English</option>
+              <option value="hi">हिंदी</option>
+              <option value="kn">ಕನ್ನಡ</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -187,6 +196,315 @@
 
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Add User Modal -->
+  <div class="modal-overlay" id="addUserModal">
+    <div class="modal" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New User</h3>
+        <button class="modal-close" onclick="closeAddUserModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="addUserForm" onsubmit="createUser(event)">
+        <div class="modal-body">
+          <!-- Account Info -->
+          <h4 style="color: var(--primary); margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Account Information</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" required placeholder="user@example.com">
+            </div>
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" name="password" required minlength="6" placeholder="Min 6 characters">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="9876543210">
+          </div>
+
+          <!-- Basic Info -->
+          <h4 style="color: var(--primary); margin: 20px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Basic Information</h4>
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="name" required placeholder="John Doe">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Gender *</label>
+              <select name="gender" required>
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Age *</label>
+              <input type="number" name="age" required min="18" max="100" placeholder="25">
+            </div>
+            <div class="form-group">
+              <label>Height (cm)</label>
+              <input type="number" name="height" min="120" max="220" placeholder="170">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Marital Status</label>
+              <select name="maritalStatus">
+                <option value="">Select</option>
+                <option value="never_married">Never Married</option>
+                <option value="divorced">Divorced</option>
+                <option value="widowed">Widowed</option>
+                <option value="separated">Separated</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Body Type</label>
+              <select name="bodyType">
+                <option value="">Select</option>
+                <option value="slim">Slim</option>
+                <option value="average">Average</option>
+                <option value="athletic">Athletic</option>
+                <option value="heavy">Heavy</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city" placeholder="Bangalore">
+            </div>
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" name="state" placeholder="Karnataka">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>About (Bio)</label>
+            <textarea name="about" rows="2" placeholder="Brief description about the user..."></textarea>
+          </div>
+
+          <!-- Cultural Info -->
+          <h4 style="color: var(--primary); margin: 20px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Cultural Information</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Religion</label>
+              <select name="religion">
+                <option value="">Select</option>
+                <option value="hindu">Hindu</option>
+                <option value="muslim">Muslim</option>
+                <option value="christian">Christian</option>
+                <option value="sikh">Sikh</option>
+                <option value="buddhist">Buddhist</option>
+                <option value="jain">Jain</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Caste</label>
+              <input type="text" name="caste" placeholder="Enter caste">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Mother Tongue</label>
+              <select name="motherTongue">
+                <option value="">Select</option>
+                <option value="hindi">Hindi</option>
+                <option value="kannada">Kannada</option>
+                <option value="tamil">Tamil</option>
+                <option value="telugu">Telugu</option>
+                <option value="marathi">Marathi</option>
+                <option value="bengali">Bengali</option>
+                <option value="gujarati">Gujarati</option>
+                <option value="punjabi">Punjabi</option>
+                <option value="malayalam">Malayalam</option>
+                <option value="urdu">Urdu</option>
+                <option value="english">English</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Gothra</label>
+              <input type="text" name="gothra" placeholder="Enter gothra">
+            </div>
+          </div>
+
+          <!-- Career Info -->
+          <h4 style="color: var(--primary); margin: 20px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Career Information</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Education</label>
+              <select name="education">
+                <option value="">Select</option>
+                <option value="high_school">High School</option>
+                <option value="diploma">Diploma</option>
+                <option value="bachelors">Bachelor's Degree</option>
+                <option value="masters">Master's Degree</option>
+                <option value="doctorate">Doctorate</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Profession</label>
+              <input type="text" name="profession" placeholder="Software Engineer">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Company</label>
+              <input type="text" name="company" placeholder="Company name">
+            </div>
+            <div class="form-group">
+              <label>Annual Income</label>
+              <select name="annualIncome">
+                <option value="">Select</option>
+                <option value="0-3_lakh">0-3 Lakh</option>
+                <option value="3-5_lakh">3-5 Lakh</option>
+                <option value="5-10_lakh">5-10 Lakh</option>
+                <option value="10-20_lakh">10-20 Lakh</option>
+                <option value="20-50_lakh">20-50 Lakh</option>
+                <option value="50_lakh+">50 Lakh+</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Family Info -->
+          <h4 style="color: var(--primary); margin: 20px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Family Information</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Family Type</label>
+              <select name="familyType">
+                <option value="">Select</option>
+                <option value="joint">Joint Family</option>
+                <option value="nuclear">Nuclear Family</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Family Status</label>
+              <select name="familyStatus">
+                <option value="">Select</option>
+                <option value="middle_class">Middle Class</option>
+                <option value="upper_middle_class">Upper Middle Class</option>
+                <option value="rich">Rich</option>
+                <option value="affluent">Affluent</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Father's Occupation</label>
+              <input type="text" name="fatherOccupation" placeholder="Business / Service">
+            </div>
+            <div class="form-group">
+              <label>Mother's Occupation</label>
+              <input type="text" name="motherOccupation" placeholder="Homemaker / Service">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>No. of Brothers</label>
+              <input type="number" name="brothers" min="0" max="10" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>No. of Sisters</label>
+              <input type="number" name="sisters" min="0" max="10" placeholder="0">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="createUserBtn">Create User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay" id="editUserModal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit User</h3>
+        <button class="modal-close" onclick="closeEditUserModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="editUserForm" onsubmit="updateUser(event)">
+        <input type="hidden" name="userId" id="editUserId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" id="editName" placeholder="John Doe">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Gender</label>
+              <select name="gender" id="editGender">
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" name="age" id="editAge" min="18" max="100">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city" id="editCity">
+            </div>
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" name="state" id="editState">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Religion</label>
+            <select name="religion" id="editReligion">
+              <option value="">Select</option>
+              <option value="hindu">Hindu</option>
+              <option value="muslim">Muslim</option>
+              <option value="christian">Christian</option>
+              <option value="sikh">Sikh</option>
+              <option value="buddhist">Buddhist</option>
+              <option value="jain">Jain</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Status</label>
+              <select name="isActive" id="editIsActive">
+                <option value="true">Active</option>
+                <option value="false">Banned</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Verified</label>
+              <select name="isVerified" id="editIsVerified">
+                <option value="true">Verified</option>
+                <option value="false">Pending</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="updateUserBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="js/admin.js"></script>
   <script>
@@ -288,6 +606,12 @@
               <button class="action-btn" style="color: #25D366;" title="Share on WhatsApp" onclick="shareUserOnWhatsApp('${user._id}')">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </button>
+              <button class="action-btn edit" title="Edit User" onclick="editUser('${user._id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                 </svg>
               </button>
               ${!user.isVerified ? `
@@ -437,6 +761,116 @@
         loadUsers(currentPage);
       } catch (error) {
         showToast('error', error.message);
+      }
+    }
+
+    // Show Add User Modal
+    function showAddUserModal() {
+      document.getElementById('addUserModal').classList.add('active');
+      document.getElementById('addUserForm').reset();
+    }
+
+    // Close Add User Modal
+    function closeAddUserModal() {
+      document.getElementById('addUserModal').classList.remove('active');
+    }
+
+    // Create User
+    async function createUser(event) {
+      event.preventDefault();
+      const form = event.target;
+      const btn = document.getElementById('createUserBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      const formData = new FormData(form);
+      const userData = {};
+      formData.forEach((value, key) => {
+        if (value) userData[key] = value;
+      });
+
+      try {
+        await api('/users', {
+          method: 'POST',
+          body: JSON.stringify(userData),
+        });
+        showToast('success', 'User created successfully');
+        closeAddUserModal();
+        loadUsers(1);
+      } catch (error) {
+        showToast('error', error.message || 'Failed to create user');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create User';
+      }
+    }
+
+    // Edit User - Load user data into edit modal
+    async function editUser(userId) {
+      document.getElementById('editUserModal').classList.add('active');
+      
+      try {
+        const data = await api(`/users/${userId}`);
+        const user = data.user;
+        
+        // Populate form fields
+        document.getElementById('editUserId').value = user._id;
+        document.getElementById('editName').value = user.basicInfo?.name || '';
+        document.getElementById('editGender').value = user.basicInfo?.gender || '';
+        document.getElementById('editAge').value = user.basicInfo?.age || '';
+        document.getElementById('editCity').value = user.basicInfo?.city || '';
+        document.getElementById('editState').value = user.basicInfo?.state || '';
+        document.getElementById('editReligion').value = user.culturalInfo?.religion || '';
+        document.getElementById('editIsActive').value = user.isActive ? 'true' : 'false';
+        document.getElementById('editIsVerified').value = user.isVerified ? 'true' : 'false';
+      } catch (error) {
+        showToast('error', 'Failed to load user data');
+        closeEditUserModal();
+      }
+    }
+
+    // Close Edit User Modal
+    function closeEditUserModal() {
+      document.getElementById('editUserModal').classList.remove('active');
+    }
+
+    // Update User
+    async function updateUser(event) {
+      event.preventDefault();
+      const btn = document.getElementById('updateUserBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const userId = document.getElementById('editUserId').value;
+      
+      const updateData = {
+        basicInfo: {
+          name: document.getElementById('editName').value,
+          gender: document.getElementById('editGender').value,
+          age: parseInt(document.getElementById('editAge').value) || null,
+          city: document.getElementById('editCity').value,
+          state: document.getElementById('editState').value,
+        },
+        culturalInfo: {
+          religion: document.getElementById('editReligion').value,
+        },
+        isActive: document.getElementById('editIsActive').value === 'true',
+        isVerified: document.getElementById('editIsVerified').value === 'true',
+      };
+
+      try {
+        await api(`/users/${userId}`, {
+          method: 'PUT',
+          body: JSON.stringify(updateData),
+        });
+        showToast('success', 'User updated successfully');
+        closeEditUserModal();
+        loadUsers(currentPage);
+      } catch (error) {
+        showToast('error', error.message || 'Failed to update user');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
       }
     }
   </script>

@@ -8,13 +8,22 @@
  * - Intelligent matching algorithm
  * - Connection request system
  *
+ * Optimized for 10K concurrent users with:
+ * - Response compression
+ * - Rate limiting
+ * - Security headers
+ * - Connection pooling
+ *
  * @author Senior Full Stack Engineer
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const compression = require("compression");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/db");
 
 // Import routes
@@ -32,7 +41,59 @@ const app = express();
 connectDB();
 
 // ===================
-// MIDDLEWARE
+// PERFORMANCE & SECURITY MIDDLEWARE
+// ===================
+
+// Compression - Reduce response size by ~70%
+app.use(
+  compression({
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+    level: 6, // Balanced compression level
+  }),
+);
+
+// Security headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin for images
+    contentSecurityPolicy: false, // Disable for API
+  }),
+);
+
+// Rate limiting - General API
+const generalLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting - Auth routes (stricter)
+const authLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute for auth
+  message: {
+    success: false,
+    message: "Too many login attempts, please try again after a minute.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply general rate limit to all requests
+app.use("/api/", generalLimiter);
+
+// ===================
+// CORE MIDDLEWARE
 // ===================
 
 // CORS - Allow cross-origin requests (for mobile app)
@@ -90,7 +151,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // Mount route handlers
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/connection", connectionRoutes);
 app.use("/api/admin", adminRoutes);
@@ -199,6 +260,11 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
+  const isProd = process.env.IS_PROD === "true";
+  const apiUrl = isProd
+    ? "https://matrimony-app-server.onrender.com"
+    : `http://localhost:${PORT}`;
+
   console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
@@ -206,7 +272,7 @@ app.listen(PORT, () => {
 ║                                                            ║
 ║   Environment: ${(process.env.NODE_ENV || "development").padEnd(40)}║
 ║   Port: ${PORT}║
-║   API URL: https://matrimony-app-server.onrender.com       ║
+║   API URL: ${apiUrl.padEnd(43)}║
 ║                                                            ║
 ║   Endpoints:                                               ║
 ║   - POST /api/auth/register    (Create account)            ║
@@ -216,7 +282,7 @@ app.listen(PORT, () => {
 ║   - POST /api/connection/send  (Send interest)             ║
 ║   - PUT  /api/connection/respond (Accept/Reject)           ║
 ║                                                            ║
-║   Admin Panel: https://matrimony-app-server.onrender.com/admin ║
+║   Admin Panel: ${(apiUrl + "/admin").padEnd(43)} ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
   `);

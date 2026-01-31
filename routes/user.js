@@ -2,8 +2,152 @@ const express = require("express");
 const User = require("../models/User");
 const { auth } = require("../middleware/auth");
 const { getRecommendations } = require("../utils/matchingAlgorithm");
+const upload = require("../middleware/upload");
+const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
+
+/**
+ * @route   POST /api/user/profile-photo
+ * @desc    Upload profile photo
+ * @access  Private
+ */
+router.post(
+  "/profile-photo",
+  auth,
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded",
+        });
+      }
+
+      // Upload to Cloudinary
+      // Convert buffer to base64
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: "matrimony/profiles",
+        public_id: `user_${req.user.id}`,
+        overwrite: true,
+        transformation: [
+          { width: 500, height: 500, crop: "fill", gravity: "face" },
+        ],
+      });
+
+      // Update user
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { profilePhoto: result.secure_url },
+        { new: true },
+      ).select("-password");
+
+      res.json({
+        success: true,
+        message: "Photo uploaded successfully",
+        data: {
+          profilePhoto: result.secure_url,
+        },
+      });
+    } catch (error) {
+      console.error("Upload photo error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error while uploading photo",
+      });
+    }
+  },
+);
+
+/**
+ * @route   POST /api/user/photos
+ * @desc    Upload a photo to gallery (max 4)
+ * @access  Private
+ */
+router.post("/photos", auth, upload.single("photo"), async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    if (user.photos && user.photos.length >= 4) {
+      return res.status(400).json({
+        success: false,
+        message: "Maximum 4 photos allowed",
+      });
+    }
+
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded" });
+    }
+
+    // Upload to Cloudinary
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "matrimony/gallery",
+      public_id: `user_${req.user.id}_${Date.now()}`,
+      overwrite: true,
+      transformation: [{ width: 1000, height: 1000, crop: "limit" }],
+    });
+
+    user.photos.push(result.secure_url);
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Photo uploaded",
+      data: user.photos,
+    });
+  } catch (error) {
+    console.error("Gallery upload error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/**
+ * @route   DELETE /api/user/photos
+ * @desc    Delete a photo from gallery
+ * @access  Private
+ */
+router.delete("/photos", auth, async (req, res) => {
+  try {
+    const { photoUrl } = req.body;
+    if (!photoUrl)
+      return res
+        .status(400)
+        .json({ success: false, message: "Photo URL required" });
+
+    const user = await User.findById(req.user.id);
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    if (user.photos) {
+      user.photos = user.photos.filter((url) => url !== photoUrl);
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      message: "Photo deleted",
+      data: user.photos,
+    });
+  } catch (error) {
+    console.error("Gallery delete error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 /**
  * @route   GET /api/user/profile
@@ -273,5 +417,116 @@ function checkProfileComplete(userData) {
 
   return !!(hasBasicInfo && hasCulturalInfo && hasCareerInfo);
 }
+
+/**
+ * @route   DELETE /api/user/account
+ * @desc    Delete user account
+ * @access  Private
+ */
+router.delete("/account", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Delete profile photo from Cloudinary if exists
+    if (user.profilePhoto && user.profilePhoto.includes("cloudinary")) {
+      try {
+        const publicId = `matrimony/profiles/user_${req.user.id}`;
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.error("Error deleting profile photo:", err);
+      }
+    }
+
+    // Delete gallery photos from Cloudinary
+    if (user.photos && user.photos.length > 0) {
+      for (const photoUrl of user.photos) {
+        if (photoUrl.includes("cloudinary")) {
+          try {
+            const parts = photoUrl.split("/");
+            const filename = parts[parts.length - 1].split(".")[0];
+            await cloudinary.uploader.destroy(`matrimony/gallery/${filename}`);
+          } catch (err) {
+            console.error("Error deleting gallery photo:", err);
+          }
+        }
+      }
+    }
+
+    // Delete the user
+    await User.findByIdAndDelete(req.user.id);
+
+    // Also clean up connections (optional but good practice)
+    const Connection = require("../models/Connection");
+    await Connection.deleteMany({
+      $or: [{ requester: req.user.id }, { receiver: req.user.id }],
+    });
+
+    res.json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting account",
+    });
+  }
+});
+
+/**
+ * @route   PUT /api/user/privacy-settings
+ * @desc    Update privacy settings
+ * @access  Private
+ */
+router.put("/privacy-settings", auth, async (req, res) => {
+  try {
+    const allowedSettings = [
+      "showProfile",
+      "showPhotos",
+      "showContactInfo",
+      "showOnlineStatus",
+      "allowMessages",
+    ];
+
+    const updates = {};
+    for (const key of allowedSettings) {
+      if (req.body[key] !== undefined) {
+        updates[`privacySettings.${key}`] = req.body[key];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid settings provided",
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: updates },
+      { new: true },
+    ).select("-password");
+
+    res.json({
+      success: true,
+      message: "Privacy settings updated",
+      data: user.privacySettings,
+    });
+  } catch (error) {
+    console.error("Update privacy settings error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating privacy settings",
+    });
+  }
+});
 
 module.exports = router;
