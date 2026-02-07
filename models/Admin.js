@@ -113,7 +113,7 @@ AdminSchema.statics.getDefaultPermissions = function (role) {
 };
 
 // Index
-AdminSchema.index({ email: 1 });
+// AdminSchema.index({ email: 1 }); // Removed: duplicate of unique: true
 AdminSchema.index({ role: 1 });
 
 module.exports = mongoose.model("Admin", AdminSchema);

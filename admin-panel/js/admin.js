@@ -251,7 +251,7 @@ function confirmAction(message) {
 function shareOnWhatsApp(user) {
   const brokerPhone =
     brokerConfig.broker?.whatsapp || brokerConfig.broker?.phone || "";
-  const brokerName = brokerConfig.broker?.name || "Matrimony Service";
+  const brokerName = brokerConfig.broker?.name || "Lagnam";
 
   const profileText = `
 *${user.basicInfo?.name || "Profile"}*

@@ -390,6 +390,53 @@ const UserSchema = new mongoose.Schema(
         default: true,
       },
     },
+
+    // Wallet System - Used for unlocking full profiles
+    wallet: {
+      balance: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+      transactions: [
+        {
+          type: {
+            type: String,
+            enum: ["credit", "debit"],
+            required: true,
+          },
+          amount: {
+            type: Number,
+            required: true,
+          },
+          description: {
+            type: String,
+            required: true,
+          },
+          relatedUserId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
+          createdAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      profilesUnlocked: [
+        {
+          userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
+          unlockedAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+    },
+
     lastActive: {
       type: Date,
       default: Date.now,
@@ -421,7 +468,7 @@ UserSchema.index({
 });
 
 // Single field indexes for common lookups
-UserSchema.index({ email: 1 });
+// UserSchema.index({ email: 1 }); // Removed: duplicate of unique: true
 UserSchema.index({ phone: 1 });
 UserSchema.index({ "basicInfo.city": 1 });
 UserSchema.index({ "careerInfo.annualIncome": 1 });

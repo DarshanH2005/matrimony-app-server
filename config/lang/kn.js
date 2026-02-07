@@ -82,7 +82,7 @@ module.exports = {
   // Connections
   connections: {
     title: "ಸಂಪರ್ಕಗಳು",
-    sendInterest: "ಆಸಕ್ತಿ ಕಳುಹಿಸಿ",
+    viewPhoneNumber: "ಫೋನ್ ನಂಬರ್ ವೀಕ್ಷಿಸಿ",
     accept: "ಒಪ್ಪಿಕೊಳ್ಳಿ",
     reject: "ತಿರಸ್ಕರಿಸಿ",
     pending: "ಬಾಕಿ",

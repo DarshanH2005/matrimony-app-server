@@ -61,6 +61,20 @@ router.post("/send", auth, async (req, res) => {
       });
     }
 
+    // Check if profile is UNLOCKED
+    // Users must unlock a profile before sending interest
+    const isUnlocked = sender.wallet?.profilesUnlocked?.some(
+      (item) => item.userId.toString() === receiverId
+    );
+
+    if (!isUnlocked) {
+      return res.status(403).json({
+        success: false,
+        message: "You must unlock this profile before sending a connection request",
+        isLocked: true
+      });
+    }
+
     // Add request to sender (as sent)
     sender.connectionRequests.push({
       userId: receiverId,

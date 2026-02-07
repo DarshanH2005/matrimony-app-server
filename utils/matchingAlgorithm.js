@@ -158,16 +158,20 @@ const getRecommendations = async (
   page = 1,
   limit = 10,
 ) => {
+  console.log(`[Matching] Starting recommendations for user ${userId}, page ${page}`);
   try {
     // Get the requesting user with their preferences
     const requestingUser = await User.findById(userId);
 
     if (!requestingUser) {
+      console.error(`[Matching] User ${userId} not found`);
       throw new Error("User not found");
     }
 
     const preferences = requestingUser.partnerPreferences || {};
     const userGender = requestingUser.basicInfo?.gender;
+
+    console.log(`[Matching] Algorithm inputs: Gender=${userGender}, Prefs=${JSON.stringify(preferences.religion || 'none')}`);
 
     // Build exclude list: users already connected/pending/rejected
     const excludeIds = [userId]; // Always exclude self
@@ -222,18 +226,29 @@ const getRecommendations = async (
       query["basicInfo.city"] = new RegExp(filters.city, "i");
     }
 
+    console.log(`[Matching] Query built: ${JSON.stringify(query)}`);
+
     // Get total count for pagination
+    console.time("countDocuments");
     const totalCount = await User.countDocuments(query);
+    console.timeEnd("countDocuments");
+    console.log(`[Matching] Found ${totalCount} potential matches`);
+
     const totalPages = Math.ceil(totalCount / limit);
 
     // Fetch matching users
+    console.time("findUsers");
     const users = await User.find(query)
       .select("-password -connectionRequests")
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
+    console.timeEnd("findUsers");
+
+    console.log(`[Matching] Fetched ${users.length} users`);
 
     // Calculate match scores and sort
+    console.time("scoring");
     const usersWithScores = users.map((user) => ({
       ...user,
       matchScore: calculateMatchScore(user, preferences),
@@ -241,6 +256,7 @@ const getRecommendations = async (
 
     // Sort by match score (highest first)
     usersWithScores.sort((a, b) => b.matchScore - a.matchScore);
+    console.timeEnd("scoring");
 
     return {
       users: usersWithScores,

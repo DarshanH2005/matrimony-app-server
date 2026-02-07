@@ -4,6 +4,7 @@ const { auth } = require("../middleware/auth");
 const { getRecommendations } = require("../utils/matchingAlgorithm");
 const upload = require("../middleware/upload");
 const cloudinary = require("../config/cloudinary");
+const { watermarkUserPhotos } = require("../utils/watermark");
 
 const router = express.Router();
 
@@ -353,7 +354,10 @@ router.get("/recommendations", auth, async (req, res) => {
 
     res.json({
       success: true,
-      data: recommendations,
+      data: {
+        ...recommendations,
+        users: recommendations.users.map((user) => watermarkUserPhotos(user)),
+      },
     });
   } catch (error) {
     console.error("Get recommendations error:", error);
@@ -389,9 +393,59 @@ router.get("/:id", auth, async (req, res) => {
       });
     }
 
+    // Check if the viewer has unlocked this profile
+    const viewerId = req.user.id;
+    const profileId = req.params.id;
+
+    // Users can always see their own full profile
+    const isOwnProfile = viewerId === profileId;
+
+    // Check if unlocked
+    let isUnlocked = isOwnProfile;
+    if (!isUnlocked) {
+      const viewer = await User.findById(viewerId).select("wallet.profilesUnlocked");
+      isUnlocked = viewer?.wallet?.profilesUnlocked?.some(
+        (item) => item.userId.toString() === profileId
+      );
+    }
+
+    // Apply watermarks
+    const userData = user.toObject();
+    const watermarkedUser = watermarkUserPhotos(userData);
+
+    // Filter data if locked
+    if (!isUnlocked) {
+      // Hide contact info
+      if (watermarkedUser.phone) watermarkedUser.phone = null;
+      if (watermarkedUser.email) watermarkedUser.email = null;
+
+      // Hide Career Info COMPLETELY
+      if (watermarkedUser.careerInfo) {
+        watermarkedUser.careerInfo = null;
+      }
+
+      // Hide Detailed Family Info COMPONENTS
+      if (watermarkedUser.familyInfo) {
+        watermarkedUser.familyInfo = null;
+      }
+
+      // Hide About Me
+      if (watermarkedUser.about) {
+        watermarkedUser.about = null;
+      }
+
+      // Hide Gallery Photos (keep only profile photo)
+      if (watermarkedUser.photos) {
+        watermarkedUser.photos = [];
+      }
+    }
+
     res.json({
       success: true,
-      data: user,
+      data: {
+        ...watermarkedUser,
+        isUnlocked, // Flag for frontend to show "Unlock" button
+      },
     });
   } catch (error) {
     console.error("Get user error:", error);

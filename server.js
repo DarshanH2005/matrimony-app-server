@@ -1,7 +1,8 @@
 /**
- * Matrimony App Server
+ * Lagnam App Server - Decided by Destiny
  *
- * Main entry point for the Indian Matrimony App backend API.
+ * Main entry point for the Lagnam App backend API.
+ * Owner: Veeresh H | Smartspacetechnologies | +919902847517
  * This server provides:
  * - User authentication (JWT-based with OTP mock support)
  * - Profile management (biodata, preferences)
@@ -32,6 +33,7 @@ const userRoutes = require("./routes/user");
 const connectionRoutes = require("./routes/connection");
 const adminRoutes = require("./routes/admin");
 const configRoutes = require("./routes/config");
+const walletRoutes = require("./routes/wallet");
 const path = require("path");
 
 // Initialize Express app
@@ -128,12 +130,13 @@ app.use("/admin", express.static(path.join(__dirname, "admin-panel")));
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "Matrimony App API is running",
+    message: "Lagnam App API is running - Decided by Destiny",
     version: "1.0.0",
     endpoints: {
       auth: "/api/auth",
       user: "/api/user",
       connection: "/api/connection",
+      wallet: "/api/wallet",
       admin: "/api/admin",
       config: "/api/config",
       adminPanel: "/admin",
@@ -156,6 +159,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/connection", connectionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/config", configRoutes);
+app.use("/api/wallet", walletRoutes);
 
 // ===================
 // ERROR HANDLING
@@ -268,7 +272,7 @@ app.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║   🎉 Matrimony App Server Started Successfully! 🎉         ║
+║   🎉 Lagnam App Server Started Successfully! 🎉            ║
 ║                                                            ║
 ║   Environment: ${(process.env.NODE_ENV || "development").padEnd(40)}║
 ║   Port: ${PORT}║

@@ -10,10 +10,10 @@ module.exports = {
   // BROKER IDENTITY
   // ===================
   broker: {
-    name: "Matrimony Service", // Broker's business name
-    tagline: "Find Your Perfect Match", // Short tagline
-    phone: "+91 9876543210", // Broker's phone number
-    whatsapp: "+91 9876543210", // WhatsApp number (with country code)
+    name: "Lagnam - Decided by Destiny", // Owner: Veeresh H | Smartspacetechnologies | +919902847517
+    tagline: "Decided by Destiny", // Short tagline
+    phone: "+919902847517", // Owner's phone number
+    whatsapp: "+919902847517", // WhatsApp number (with country code)
     email: "contact@example.com",
     address: "Your City, State",
   },

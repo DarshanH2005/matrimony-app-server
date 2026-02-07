@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 /**
  * Connect to MongoDB database
- *
+ * 
  * Optimized for 10K concurrent users with:
  * - Connection pooling (50 max connections)
  * - Automatic reconnection
@@ -13,20 +13,18 @@ const connectDB = async () => {
     const conn = await mongoose.connect(
       process.env.MONGO_URI || "mongodb://localhost:27017/matrimony-app",
       {
-        // Connection pooling for high concurrency
-        maxPoolSize: 50, // Max 50 connections in pool
-        minPoolSize: 10, // Keep 10 connections warm
+        // Connection pooling
+        maxPoolSize: 10, // Reduced from 50 to 10 for stability on free tier
+        minPoolSize: 0,
 
-        // Timeouts
-        serverSelectionTimeoutMS: 5000, // Fail fast if no server
-        socketTimeoutMS: 45000, // Close sockets after 45s inactivity
+        // Timeouts - Increased for stability
+        serverSelectionTimeoutMS: 10000, // Increased to 10s
+        socketTimeoutMS: 45000,
 
-        // Write concern for reliability
+        // Write concern
         w: "majority",
-
-        // Retry writes on transient errors
         retryWrites: true,
-      },
+      }
     );
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
@@ -45,7 +43,10 @@ const connectDB = async () => {
     });
   } catch (error) {
     console.error(`❌ Error connecting to MongoDB: ${error.message}`);
-    process.exit(1);
+    // Don't exit process in dev, let it retry or stay alive
+    if (process.env.NODE_ENV === 'production') {
+      process.exit(1);
+    }
   }
 };
 

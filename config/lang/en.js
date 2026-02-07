@@ -5,7 +5,7 @@
 module.exports = {
   // Common
   common: {
-    appName: "Matrimony Service",
+    appName: "Lagnam - Decided by Destiny",
     loading: "Loading...",
     save: "Save",
     cancel: "Cancel",
@@ -82,7 +82,7 @@ module.exports = {
   // Connections
   connections: {
     title: "Connections",
-    sendInterest: "Send Interest",
+    viewPhoneNumber: "View Phone Number",
     accept: "Accept",
     reject: "Reject",
     pending: "Pending",
